@@ -1,76 +1,53 @@
--- MySQL dump 10.13  Distrib 5.6.22, for osx10.8 (x86_64)
---
--- Host: 127.0.0.1    Database: Zoo_db
--- ------------------------------------------------------
--- Server version	5.7.18
+-- QNS.3)
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+CREATE DATABASE zoo_db;
+USE zoo_db;
+CREATE TABLE animal (
+    animal_id INT PRIMARY KEY,
+    animal_name VARCHAR(50),
+    species VARCHAR(50),
+    habitat_id INT
+);
+CREATE TABLE habitat (
+    habitat_id INT PRIMARY KEY,
+    habitat_name VARCHAR(50),
+    environment VARCHAR(50)
+);
 
---
--- Table structure for table `feeding_schedule`
---
+CREATE TABLE feeding_schedule (
+    schedule_id INT PRIMARY KEY,
+    animal_id INT,
+    food VARCHAR(50),
+    feeding_time TIME
+);
 
-DROP TABLE IF EXISTS `feeding_schedule`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `feeding_schedule` (
-  `schedule_id` int(11) NOT NULL,
-  `animal_id` int(11) DEFAULT NULL,
-  `food` varchar(50) DEFAULT NULL,
-  `feeding_time` time DEFAULT NULL,
-  PRIMARY KEY (`schedule_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- part a)
+ALTER TABLE animal
+ADD FOREIGN KEY (habitat_id) REFERENCES habitat(habitat_id);
 
---
--- Dumping data for table `feeding_schedule`
---
+ALTER TABLE feeding_schedule
+ADD FOREIGN KEY (animal_id) REFERENCES animal(animal_id);
 
-LOCK TABLES `feeding_schedule` WRITE;
-/*!40000 ALTER TABLE `feeding_schedule` DISABLE KEYS */;
-/*!40000 ALTER TABLE `feeding_schedule` ENABLE KEYS */;
-UNLOCK TABLES;
+-- part b) 
+SELECT food_type, COUNT() AS total_feedings
+FROM feedings
+GROUP BY food_type;
 
---
--- Table structure for table `habitat`
---
+-- partc) 
+SELECT animal_name, COUNT() AS feedings_per_day
+FROM feedings
+GROUP BY animal_name
+HAVING COUNT() > 1;
 
-DROP TABLE IF EXISTS `habitat`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `habitat` (
-  `habitat_id` int(11) NOT NULL,
-  `habitat_name` varchar(50) DEFAULT NULL,
-  `environment` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`habitat_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- partd)applications of DBMS
+Banking Systems – For managing customer accounts,transactions,branches,Loans and others.
+University– For handling student data, course registrations, attendance and others.
+E-commence business-For recording customers,inventory,locations,depertments and others
+Acholal hubby club - For registrating various workshops,different activities like painting,photography,cooking and others.
 
---
--- Dumping data for table `habitat`
---
+-- parte)
+i) Primary Key 
+A Primary Key is a unique identifier that identifies each record in table in the database. 
 
-LOCK TABLES `habitat` WRITE;
-/*!40000 ALTER TABLE `habitat` DISABLE KEYS */;
-/*!40000 ALTER TABLE `habitat` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2025-05-19 15:13:14
+ii) Foreign Key 
+A Foreign Key is a set of column in the table that references the primary key of another table.
