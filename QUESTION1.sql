@@ -1,86 +1,90 @@
--- MySQL dump 10.13  Distrib 5.6.22, for osx10.8 (x86_64)
---
--- Host: 127.0.0.1    Database: student
--- ------------------------------------------------------
--- Server version	5.7.18
+-- QUESTION ONE
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+-- i.) Create Database and Tables
+CREATE DATABASE IF NOT EXISTS student;
+USE student;
 
---
--- Table structure for table `tblFinance`
---
+CREATE TABLE tblFinance (
+    StudentID INT NOT NULL PRIMARY KEY,
+    Tuition_Fee INT NOT NULL,
+    Administration_Fee INT NOT NULL,
+    Exams_Fee INT NOT NULL,
+    Medical_Fee INT NOT NULL
+);
 
-DROP TABLE IF EXISTS `tblFinance`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tblFinance` (
-  `StudentID` int(11) NOT NULL,
-  `Tuition_Fee` int(11) NOT NULL,
-  `Administration_fee` int(11) NOT NULL,
-  `Exams_fee` int(11) NOT NULL,
-  `Medical_fee` int(11) NOT NULL,
-  `Lowest_Tuition` int(11) DEFAULT NULL,
-  `Highest_Tuition` int(11) DEFAULT NULL,
-  PRIMARY KEY (`StudentID`),
-  UNIQUE KEY `StudentID` (`StudentID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE tblstudent (
+    StudentName VARCHAR(255) NOT NULL PRIMARY KEY,
+    StudentID INT NOT NULL UNIQUE,
+    Birthdate VARCHAR(20) NOT NULL,
+    Year VARCHAR(20) NOT NULL,
+    MobileNo VARCHAR(10) NOT NULL,
+    FOREIGN KEY (StudentID) REFERENCES tblFinance(StudentID)
+);
 
---
--- Dumping data for table `tblFinance`
---
+-- Insert data into tblFinance
+INSERT INTO tblFinance (StudentID, Tuition_Fee, Administration_Fee, Exams_Fee, Medical_Fee)
+VALUES  
+  (235, 30000, 5000, 3000, 4000),
+  (26, 40000, 5000, 2000, 4000),
+  (1, 34000, 5000, 3000, 4000),
+  (2, 23000, 5000, 3000, 4000),
+  (3, 20000, 5000, 3000, 4000),
+  (29, 35000, 5000, 2000, 4000),
+  (127, 28000, 5000, 3000, 4000);
 
-LOCK TABLES `tblFinance` WRITE;
-/*!40000 ALTER TABLE `tblFinance` DISABLE KEYS */;
-INSERT INTO `tblFinance` VALUES (1,34000,5000,3000,4000,NULL,NULL),(2,23000,5000,3000,4000,NULL,NULL),(3,20000,5000,3000,4000,NULL,NULL),(26,40000,5000,2000,4000,NULL,NULL),(29,35000,5000,2000,4000,NULL,NULL),(127,28000,5000,3000,4000,NULL,NULL),(235,30000,5000,3000,4000,NULL,NULL),(236,50000,5000,3000,4000,NULL,NULL);
-/*!40000 ALTER TABLE `tblFinance` ENABLE KEYS */;
-UNLOCK TABLES;
+-- Insert data into tblstudent
+INSERT INTO tblstudent (StudentName, StudentID, Birthdate, Year, MobileNo)
+VALUES 
+  ('Jane', 235, '12/1/1987', 'Y1S2', '072224532'),
+  ('Nicholas', 26, '22/7/2002', 'Y1S1', '0720458674'),
+  ('Cyrus', 1, '15/6/1989', 'Y2S1', '0704231345'),
+  ('Neema', 2, '29/11/2008', 'Y2S1', '0733876987'),
+  ('Caroline', 3, '18/10/2002', 'Y1S1', '072824532'),
+  ('Judith', 29, '17/6/2003', 'Y4S2', '076224532'),
+  ('Grace', 127, '14/1/2000', 'Y1S2', '0733765978');
 
---
--- Table structure for table `tblstudent`
---
+-- Display combined student and fee data
+SELECT s.StudentID, s.StudentName, s.Birthdate, s.Year, s.MobileNo, 
+       f.Tuition_Fee, f.Exams_Fee, f.Medical_Fee
+FROM tblstudent s
+INNER JOIN tblFinance f ON s.StudentID = f.StudentID;
 
-DROP TABLE IF EXISTS `tblstudent`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tblstudent` (
-  `StudentName` varchar(255) NOT NULL,
-  `StudentID` int(11) NOT NULL,
-  `Birthdate` varchar(20) NOT NULL,
-  `Year` varchar(20) NOT NULL,
-  `MobileNo` varchar(10) NOT NULL,
-  PRIMARY KEY (`StudentName`),
-  UNIQUE KEY `StudentID` (`StudentID`),
-  CONSTRAINT `tblstudent_ibfk_1` FOREIGN KEY (`StudentID`) REFERENCES `tblFinance` (`StudentID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- ii.) Students in Y1S1
+SELECT s.StudentName, s.StudentID, s.Year, f.Tuition_Fee
+FROM tblstudent s
+INNER JOIN tblFinance f ON s.StudentID = f.StudentID
+WHERE s.Year = 'Y1S1';
 
---
--- Dumping data for table `tblstudent`
---
+-- iii.) Students with Tuition Fee >= 30000
+SELECT s.StudentName, s.StudentID, s.Year, f.Tuition_Fee
+FROM tblstudent s
+INNER JOIN tblFinance f ON s.StudentID = f.StudentID
+WHERE f.Tuition_Fee >= 30000;
 
-LOCK TABLES `tblstudent` WRITE;
-/*!40000 ALTER TABLE `tblstudent` DISABLE KEYS */;
-INSERT INTO `tblstudent` VALUES ('Caroline',3,'18/10/2002','Y1S1','072824532'),('Cyrus',1,'15/6/1989','Y2S1','0704231345'),('Dan',236,'20/4/2001','Y1S2','0723456123'),('Grace',127,'14/1/2000','Y1S2','0733765978'),('jane',235,'12/1/1987','Y1S2','072224532'),('Judith',29,'17/6/2003','Y4S2','076224532'),('Neema',2,'29/11/2008','Y2S1','0733876987'),('Nicholas',26,'22/7/2002','Y1S1','0720458674');
-/*!40000 ALTER TABLE `tblstudent` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+-- iv.) Insert a new student
+INSERT INTO tblFinance (StudentID, Tuition_Fee, Administration_Fee, Exams_Fee, Medical_Fee)
+VALUES (236, 50000, 5000, 3000, 4000);
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+INSERT INTO tblstudent (StudentName, StudentID, Birthdate, Year, MobileNo)
+VALUES ('Dan', 236, '20/4/2001', 'Y1S2', '0723456123');
 
--- Dump completed on 2025-05-19 15:29:49
+-- v.) Update student name from Nicholas to Nelson
+UPDATE tblstudent
+SET StudentName = 'Nelson'
+WHERE StudentID = 26;
+
+-- vii.) Add Lowest and Highest Tuition columns and update them
+ALTER TABLE tblFinance
+ADD COLUMN Lowest_Tuition INT,
+ADD COLUMN Highest_Tuition INT;
+
+-- Update the new columns with global min and max tuition values
+UPDATE tblFinance
+SET 
+  Lowest_Tuition = (SELECT MIN(Tuition_Fee) FROM tblFinance),
+  Highest_Tuition = (SELECT MAX(Tuition_Fee) FROM tblFinance);
+
+-- Display final result
+SELECT StudentID, Tuition_Fee, Lowest_Tuition, Highest_Tuition
+FROM tblFinance;
+
